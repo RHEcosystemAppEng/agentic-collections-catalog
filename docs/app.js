@@ -1,5 +1,5 @@
 /**
- * agentic-collections Documentation Site
+ * agentic-collections-catalog Documentation Site
  *
  * SECURITY: All DOM manipulation uses textContent and createElement
  * to prevent XSS vulnerabilities. No innerHTML with user data.
@@ -17,7 +17,7 @@ const JS_STYLE_TOKENS = {
 };
 
 /** Default LICENSE in upstream repo (collection legal_resources may override). */
-const UPSTREAM_REPO_LICENSE_URL = 'https://github.com/RHEcosystemAppEng/agentic-collections/blob/main/LICENSE';
+const UPSTREAM_REPO_LICENSE_URL = 'https://github.com/RHEcosystemAppEng/agentic-collections-catalog/blob/main/LICENSE';
 
 /**
  * Update toolbar counter badges
@@ -816,7 +816,7 @@ function showPackDetails(packName) {
         const readmeButton = document.createElement('a');
         readmeButton.className = 'readme-button';
         readmeButton.textContent = 'README';
-        readmeButton.href = `https://github.com/RHEcosystemAppEng/agentic-collections/tree/main/${pack.name}`;
+        readmeButton.href = pack.repository || '#';
         readmeButton.target = '_blank';
         meta.appendChild(readmeButton);
     }
@@ -884,7 +884,7 @@ function showPackDetails(packName) {
 
     const installPre = document.createElement('pre');
     const installCode = document.createElement('code');
-    installCode.textContent = `lola market add rh-agentic-collections https://raw.githubusercontent.com/RHEcosystemAppEng/agentic-collections/main/marketplace/rh-agentic-collection.yml
+    installCode.textContent = `lola market add rh-agentic-collections https://raw.githubusercontent.com/RHEcosystemAppEng/agentic-collections-catalog/main/marketplace/rh-agentic-collection.yml
 lola install -f ${moduleName}`;
     installPre.appendChild(installCode);
     codeWrapper.appendChild(installPre);
@@ -1089,7 +1089,7 @@ lola install -f ${moduleName}`;
         docsLink.style.paddingTop = '1rem';
         docsLink.style.borderTop = '1px solid var(--border)';
         const link = document.createElement('a');
-        link.href = `https://github.com/RHEcosystemAppEng/agentic-collections/tree/main/${pack.name}/docs`;
+        link.href = pack.repository || '#';
         link.target = '_blank';
         link.textContent = 'View full documentation on GitHub →';
         link.style.color = 'var(--primary)';
@@ -2268,8 +2268,8 @@ function appendSkillEvalBlock(li, skill) {
     };
     const commitSha = String(ev.commit_sha || '').trim();
     const commitShort = commitSha ? commitSha.slice(0, 8) : 'N/A';
-    const commitHref = commitSha
-        ? `https://github.com/RHEcosystemAppEng/agentic-collections/commit/${commitSha}`
+    const commitHref = commitSha && ev.repository
+        ? `${String(ev.repository).replace(/\/$/, '')}/commit/${commitSha}`
         : '';
     const prUrl = String(ev.related_pr || '').trim();
     const prMatch = prUrl.match(/\/pull\/(\d+)(?:\/|$)/);

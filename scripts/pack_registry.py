@@ -66,8 +66,6 @@ def load_marketplace_module_by_path(
     return None
 
 
-MAIN_REPO_URL = "https://github.com/RHEcosystemAppEng/agentic-collections"
-
 FEDERATION_REF_SHA_RE = re.compile(r"^[0-9a-f]{40}$", re.IGNORECASE)
 
 
@@ -104,7 +102,7 @@ def validate_federated_module_entry(module: Dict[str, Any]) -> List[str]:
 def load_federated_modules(
     marketplace_path: Optional[Path] = None,
 ) -> List[Dict[str, Any]]:
-    """Return modules whose repository differs from the main repo (federated packs)."""
+    """Return all marketplace modules that have an external repository."""
     path = marketplace_path or (_repo_root() / DEFAULT_MARKETPLACE)
     if not path.exists():
         return []
@@ -115,8 +113,7 @@ def load_federated_modules(
         return []
     return [
         m for m in modules
-        if isinstance(m, dict)
-        and m.get("repository", "").rstrip("/") != MAIN_REPO_URL
+        if isinstance(m, dict) and m.get("repository", "").strip()
     ]
 
 

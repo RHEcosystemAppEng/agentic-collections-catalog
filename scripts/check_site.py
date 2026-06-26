@@ -64,7 +64,7 @@ def print_checklist():
 1. Open http://localhost:8000 in your browser
 
 2. Verify the header:
-   □ Title displays: "agentic-collections"
+   □ Title displays: "agentic-collections-catalog"
    □ Subtitle displays
    □ Search bar is visible
 
