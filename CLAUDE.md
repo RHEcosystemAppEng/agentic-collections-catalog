@@ -25,7 +25,7 @@ agentic-collections-catalog/
 │   ├── mcp.json                 # MCP server metadata
 │   └── collections/             # Generated per-pack HTML pages
 ├── scripts/                     # Catalog build and maintenance scripts
-├── COLLECTION_SPEC.md           # Specification for .catalog/ structure
+
 ├── README.md
 └── LICENSE
 ```
@@ -72,7 +72,6 @@ The `docs/` directory contains the static site served at agentskills.io. Key fil
 ### Collection Schema
 
 - `catalog/schema.yaml` — JSON Schema that defines the structure of `.catalog/collection.yaml` files in skills repos
-- `COLLECTION_SPEC.md` — Human-readable specification with rules for catalog metadata (inline vs fragment, path conventions)
 
 ## Scripts
 
@@ -107,4 +106,4 @@ Files like `docs/data.json`, `docs/collections/*.html`, and parts of `plugins.js
 
 ### Schema Changes
 
-If the structure of `.catalog/collection.yaml` needs to change, update `catalog/schema.yaml` and `COLLECTION_SPEC.md` here, then coordinate with skills repos to update their `.catalog/` directories accordingly.
+If the structure of `.catalog/collection.yaml` needs to change, update `catalog/schema.yaml` here, then coordinate with skills repos to update their `.catalog/` directories accordingly.

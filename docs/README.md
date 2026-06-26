@@ -39,11 +39,9 @@ The **`name`** of each skill in **`collection.yaml`** must match the **`skills/<
 ## Manual Updates
 
 To manually update the site:
-1. Modify pack configurations (`mcps.json`, skills, agents; optional `.claude-plugin/plugin.json`) and per-pack **`.catalog/collection.yaml`** when catalog metadata changes (see [COLLECTION_SPEC.md](../COLLECTION_SPEC.md) and [catalog/schema.yaml](../catalog/schema.yaml); use the **create-collection** / **collection-compliance** repo skills).
-2. If you edit `collection.yaml`, refresh mirrors: `make catalog-mirror-json` from the repository root.
-3. Run `make generate` from the root directory (runs `make validate` first when using `make test`).
-4. Commit the updated `docs/data.json` and any `.catalog/` files.
-5. Push to trigger GitHub Pages deployment.
+1. Run `make generate` from the root directory (runs `make validate` first when using `make test`).
+2. Commit the updated `docs/data.json`.
+3. Push to trigger GitHub Pages deployment.
 
 ## Validation for Docs Metadata
 
