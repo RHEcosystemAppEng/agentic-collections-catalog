@@ -1,6 +1,6 @@
 # Documentation Site
 
-This directory contains the generated GitHub Pages site for agentic-collections.
+This directory contains the generated GitHub Pages site for agentic-collections-catalog.
 
 ## Files
 
@@ -42,7 +42,7 @@ When changing docs presentation metadata (`styles.css`, `app.js`, `mcp.json`):
 2. Run validation checks:
 
 ```bash
-make validate
+make test
 ```
 
 3. Review validation output before merge.

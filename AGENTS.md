@@ -17,8 +17,6 @@ This is the **catalog and marketplace** for Red Hat agentic collections. It serv
 agentic-collections-catalog/
 ├── marketplace/
 │   └── rh-agentic-collection.yml  # Single source of truth for pack discovery
-├── catalog/
-│   └── schema.yaml                # JSON Schema for .catalog/collection.yaml files in skills repos
 ├── docs/                          # Static site (agentskills.io)
 │   ├── index.html                 # SPA entry point
 │   ├── app.js                     # Rendering and search logic (XSS-safe, no innerHTML)
@@ -80,7 +78,7 @@ Do not add packs to `docs/data.json` or any other file directly. Add them to the
 - **Marketplace is the single source of truth.** Do not add packs, icons, or titles anywhere else.
 - **Generated files are read-only.** `docs/data.json`, `docs/mcp.json`, and `docs/collections/*.html` are rebuilt on every run — manual edits will be overwritten.
 - **No skills development here.** To create or modify skills, work in the appropriate skills source repo.
-- **Schema changes need coordination.** Updating `catalog/schema.yaml` requires matching changes in all skills repos' `.catalog/` directories.
+- **Schema changes need coordination.** Updating `.catalog/collection.yaml` in skills repos requires consistent field usage across all packs.
 - **Security.** All DOM manipulation in `app.js` uses `textContent` and `createElement` — never `innerHTML` with external data.
 
 ## CI
