@@ -19,6 +19,11 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 _MARKETPLACE_PATH = REPO_ROOT / "marketplace" / "rh-agentic-collection.yml"
+_MARKETPLACE_RAW_URL = (
+    "https://raw.githubusercontent.com/RHEcosystemAppEng/agentic-collections-catalog"
+    "/main/marketplace/rh-agentic-collection.yml"
+)
+_MARKETPLACE_ALIAS = "rh-agentic-collections"
 def _load_marketplace_modules() -> Dict[str, Any]:
     if not _MARKETPLACE_PATH.exists():
         return {}
@@ -31,18 +36,19 @@ _MARKETPLACE_MODULES: Dict[str, Any] = _load_marketplace_modules()
 
 
 def _pack_blob_base(pack: Dict[str, Any]) -> str:
-    """Return the GitHub blob URL base (repo/blob/ref/path) for a pack."""
+    """Return the blob URL base (repo/blob/ref/path) for a pack, supporting GitHub and GitLab."""
     name = pack.get("name", "")
     mod = _MARKETPLACE_MODULES.get(name, {})
     repo = (pack.get("repository") or mod.get("repository") or "").rstrip("/")
     if not repo:
         raise ValueError(f"Pack '{name}' has no repository in pack data or marketplace")
     ref = pack.get("ref") or "main"
-    path = (mod.get("path") if mod else None) or name
+    path = (mod.get("path") if mod else None) or "."
     path = path.strip("/")
+    blob_sep = "/-/blob" if "gitlab.com" in repo else "/blob"
     if path and path != ".":
-        return f"{repo}/blob/{ref}/{path}"
-    return f"{repo}/blob/{ref}"
+        return f"{repo}{blob_sep}/{ref}/{path}"
+    return f"{repo}{blob_sep}/{ref}"
 
 
 def md_to_html(text: Any) -> str:
@@ -418,7 +424,11 @@ def _render_skills_list(skills: List[Dict[str, Any]], blob_base: str, list_tag: 
         name = str(skill.get("name", ""))
         desc = html.escape(str(skill.get("description", "")))
         summary = md_to_html(skill.get("summary_markdown", ""))
-        skill_path = f"{blob_base}/skills/{name}/SKILL.md"
+        file_path = skill.get("file_path")
+        if file_path:
+            skill_path = f"{blob_base}/{file_path}"
+        else:
+            skill_path = f"{blob_base}/skills/{name}/SKILL.md"
         heading = f"<div><code>/{html.escape(name)}</code> - {desc}"
         if list_tag:
             heading += f' <span class="skill-kind-badge">{html.escape(list_tag)}</span>'
@@ -434,7 +444,7 @@ def _render_skills_list(skills: List[Dict[str, Any]], blob_base: str, list_tag: 
             block.append(_render_skill_evaluation_block(ev))
         block.append(
             f"<a class=\"collection-inline-link\" href=\"{skill_path}\" target=\"_blank\" rel=\"noopener noreferrer\">"
-            "View SKILL.md on GitHub -></a>"
+            "View SKILL.md →</a>"
         )
         block.append("</li>")
         items.append("\n".join(block))
@@ -546,6 +556,23 @@ def _render_agents_tab(
     return "".join(out)
 
 
+def _render_lola_install_block(pack_name: str) -> str:
+    """Generate a Lola installation block for packs without catalog deploy_and_use instructions."""
+    name_esc = html.escape(pack_name)
+    code = f"lola install -f {name_esc}"
+    return (
+        "<h2>Quick Start</h2>"
+        '<div class="install-accordion">'
+        '<details class="install-accordion-item" open>'
+        '<summary class="install-accordion-header">Installation (Lola)</summary>'
+        '<div class="install-accordion-body collection-prose">'
+        f"<pre><code>{code}</code></pre>"
+        "</div>"
+        "</details>"
+        "</div>"
+    )
+
+
 def render_collection_page(pack: Dict[str, Any], mcp_data: List[Dict[str, Any]]) -> str:
     """Render a full static collection page for one pack."""
     collection = pack.get("collection") or {}
@@ -618,8 +645,13 @@ def render_collection_page(pack: Dict[str, Any], mcp_data: List[Dict[str, Any]])
         else:
             overview_parts.append("<p class=\"collection-missing\">No overview available.</p>")
 
+    # Inferred Lola install block for packs with no catalog deploy instructions
+    if not has_catalog or not collection.get("deploy_and_use"):
+        overview_parts.append(_render_lola_install_block(pack.get("name", "")))
+
     # Skills tab
     contents = collection.get("contents") or {}
+    pack_skills_raw = pack.get("skills") or []
     skills_parts = ["<h2>Skills</h2>"]
     esum = pack.get("evaluation_summary") or {}
     if int(esum.get("catalog_skill_count") or 0) > 0:
@@ -627,19 +659,22 @@ def render_collection_page(pack: Dict[str, Any], mcp_data: List[Dict[str, Any]])
     if contents.get("description"):
         skills_parts.append(f"<div class=\"collection-prose\">{md_to_html(contents.get('description'))}</div>")
     orchestration = contents.get("orchestration_skills") or []
-    skills = contents.get("skills") or []
+    catalog_skills = contents.get("skills") or []
     if orchestration:
         skills_parts.append(f"<h3>{'Orchestration Skill' if len(orchestration) == 1 else 'Orchestration Skills'}</h3>")
         skills_parts.append(_render_skills_list(orchestration, blob_base, "Orchestration skill"))
-    if skills:
+    if catalog_skills:
         skills_parts.append(f"<h3>{'Basic Skills' if orchestration else 'Skills'}</h3>")
-        skills_parts.append(_render_skills_list(skills, blob_base))
+        skills_parts.append(_render_skills_list(catalog_skills, blob_base))
     guide = contents.get("skills_decision_guide") or []
     if guide:
         skills_parts.append("<h2>Skills Decision Guide</h2>")
         skills_parts.append(_render_decision_guide(guide))
-    if not orchestration and not skills and not guide and not contents.get("description"):
-        skills_parts.append("<p class=\"collection-missing\">No skills content.</p>")
+    if not orchestration and not catalog_skills and not guide and not contents.get("description"):
+        if pack_skills_raw:
+            skills_parts.append(_render_skills_list(pack_skills_raw, blob_base))
+        else:
+            skills_parts.append("<p class=\"collection-missing\">No skills content.</p>")
 
     # Resources tab
     resources_html = _render_resources(collection.get("resources") or [], blob_base)

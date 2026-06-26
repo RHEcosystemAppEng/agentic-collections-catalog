@@ -64,7 +64,7 @@ def print_checklist():
 1. Open http://localhost:8000 in your browser
 
 2. Verify the header:
-   □ Title displays: "agentic-collections"
+   □ Title displays: "agentic-collections-catalog"
    □ Subtitle displays
    □ Search bar is visible
 
@@ -72,9 +72,7 @@ def print_checklist():
    □ Section header shows correct count
    □ Pack cards display in a grid
    □ Each card shows: name, version, skill/agent counts
-   □ "View Details" button works
-   □ Modal shows: skills list, agents list, installation code
-   □ Modal closes correctly
+   □ "View Details" button navigates to static collection page (docs/collections/<pack>.html)
 
 4. Test MCP Servers section:
    □ Section header shows correct count
