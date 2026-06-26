@@ -2,7 +2,7 @@
 
 help:
 	@echo "agentic-collections-catalog"
-	@echo ""
+	@echo "TEST"
 	@echo "Available targets:"
 	@echo "  install    - Install Python dependencies (requires uv)"
 	@echo "  generate   - Generate docs/data.json from pack data"
