@@ -47,10 +47,10 @@ To manually update the site:
 
 ## Validation for Docs Metadata
 
-When changing docs presentation metadata (`styles.css`, `app.js`, `icons.json`, `plugins.json`, `mcp.json`):
+When changing docs presentation metadata (`styles.css`, `app.js`, `plugins.json`, `mcp.json`):
 
-1. Prefer canonical tokens from `styles.css` and `style-tokens.json` over hardcoded values.
-2. Ensure every in-scope pack has icon/title mappings in `icons.json` and `plugins.json`.
+1. Prefer canonical tokens from `styles.css` over hardcoded values.
+2. Ensure every in-scope pack has icon/title mappings in `plugins.json`.
 3. Run validation checks:
 
 ```bash
