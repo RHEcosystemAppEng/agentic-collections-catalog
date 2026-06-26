@@ -664,6 +664,8 @@ def render_collection_page(pack: Dict[str, Any], mcp_data: List[Dict[str, Any]])
     if not license_nav_href:
         license_nav_href = f"{blob_base}/LICENSE"
     license_nav_href_esc = html.escape(license_nav_href, quote=True)
+    license_id = str(pack.get("plugin", {}).get("license") or "").strip()
+    license_nav_label = f"{license_id} License" if license_id and license_id != "Unknown" else "License"
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -690,7 +692,7 @@ def render_collection_page(pack: Dict[str, Any], mcp_data: List[Dict[str, Any]])
                     </div>
                     <div class="collection-nav-end">
                         <a href="{html.escape(readme_link, quote=True)}" target="_blank" rel="noopener noreferrer" class="collection-meta-link">README →</a>
-                        <a href="{license_nav_href_esc}" target="_blank" rel="noopener noreferrer" class="collection-meta-link">Apache 2.0 License →</a>
+                        <a href="{license_nav_href_esc}" target="_blank" rel="noopener noreferrer" class="collection-meta-link">{html.escape(license_nav_label)} →</a>
                     </div>
                 </nav>
                 <div class="collection-page-body collection-content-inner">
