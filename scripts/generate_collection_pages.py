@@ -19,6 +19,11 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 _MARKETPLACE_PATH = REPO_ROOT / "marketplace" / "rh-agentic-collection.yml"
+_MARKETPLACE_RAW_URL = (
+    "https://raw.githubusercontent.com/RHEcosystemAppEng/agentic-collections-catalog"
+    "/main/marketplace/rh-agentic-collection.yml"
+)
+_MARKETPLACE_ALIAS = "rh-agentic-collections"
 def _load_marketplace_modules() -> Dict[str, Any]:
     if not _MARKETPLACE_PATH.exists():
         return {}
@@ -551,6 +556,23 @@ def _render_agents_tab(
     return "".join(out)
 
 
+def _render_lola_install_block(pack_name: str) -> str:
+    """Generate a Lola installation block for packs without catalog deploy_and_use instructions."""
+    name_esc = html.escape(pack_name)
+    code = f"lola install -f {name_esc}"
+    return (
+        "<h2>Quick Start</h2>"
+        '<div class="install-accordion">'
+        '<details class="install-accordion-item" open>'
+        '<summary class="install-accordion-header">Installation (Lola)</summary>'
+        '<div class="install-accordion-body collection-prose">'
+        f"<pre><code>{code}</code></pre>"
+        "</div>"
+        "</details>"
+        "</div>"
+    )
+
+
 def render_collection_page(pack: Dict[str, Any], mcp_data: List[Dict[str, Any]]) -> str:
     """Render a full static collection page for one pack."""
     collection = pack.get("collection") or {}
@@ -622,6 +644,10 @@ def render_collection_page(pack: Dict[str, Any], mcp_data: List[Dict[str, Any]])
             overview_parts.append(f"<div class=\"collection-prose\">{md_to_html(readme_content)}</div>")
         else:
             overview_parts.append("<p class=\"collection-missing\">No overview available.</p>")
+
+    # Inferred Lola install block for packs with no catalog deploy instructions
+    if not has_catalog or not collection.get("deploy_and_use"):
+        overview_parts.append(_render_lola_install_block(pack.get("name", "")))
 
     # Skills tab
     contents = collection.get("contents") or {}
