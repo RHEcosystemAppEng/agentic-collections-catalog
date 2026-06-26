@@ -328,6 +328,11 @@ def load_federated_packs() -> List[Dict[str, Any]]:
             for w in cat_warns:
                 print(f"  ⚠️  {w}")
 
+            maturity = (cat_bundle.get("maturity") or "").strip().upper() if cat_bundle else ""
+            if maturity and maturity != pack_registry.DOCS_MATURITY_PUBLISH:
+                print(f"  ⚠️  Skipping '{name}': maturity is {maturity!r} (not GREEN)")
+                continue
+
             # README fallback: read content so the UI can show it when catalog is absent
             readme_path = pack_dir / "README.md"
             readme_content = readme_path.read_text(encoding="utf-8") if readme_path.is_file() else None
