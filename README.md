@@ -5,6 +5,8 @@ Unified marketplace and website for Red Hat agentic skill collections. This repo
 **This is not a skills development repository.** Skills are authored in source repositories like [agentic-collections-skills](https://github.com/RHEcosystemAppEng/agentic-collections-skills). An internal process fetches, evaluates, and assembles the catalog automatically.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Validate Catalog](https://github.com/RHEcosystemAppEng/agentic-collections-catalog/actions/workflows/validate.yml/badge.svg)](https://github.com/RHEcosystemAppEng/agentic-collections-catalog/actions/workflows/validate.yml)
+[![Deploy GitHub Pages](https://github.com/RHEcosystemAppEng/agentic-collections-catalog/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/RHEcosystemAppEng/agentic-collections-catalog/actions/workflows/deploy-pages.yml)
 
 ---
 
@@ -14,14 +16,11 @@ Unified marketplace and website for Red Hat agentic skill collections. This repo
 agentic-collections-catalog/
 ├── marketplace/                 # Lola marketplace definition
 │   └── rh-agentic-collection.yml
-├── catalog/                     # Collection schema for .catalog/ validation
-│   └── schema.yaml
 ├── docs/                        # Website source (agentskills.io)
 │   ├── index.html
 │   ├── app.js
 │   ├── styles.css
 │   ├── data.json                # Generated catalog data
-│   ├── plugins.json             # Plugin registry
 │   ├── mcp.json                 # MCP server metadata
 │   └── collections/             # Generated per-pack HTML pages
 ├── scripts/                     # Catalog build and validation scripts
@@ -56,9 +55,10 @@ Skills repos (source)            Internal process            This repo (output)
 │ agentic-collections- │     │ Fetch skills repos    │     │ marketplace/        │
 │ skills/              │────>│ Evaluate & score      │────>│ docs/ (website)     │
 │   rh-sre/            │     │ Build catalog data    │     │ data.json           │
-│   ocp-admin/         │     │ Generate website      │     │ plugins.json        │
+│   ocp-admin/         │     │ Generate website      │     │ mcp.json            │
 │   ...                │     └──────────────────────┘     └─────────────────────┘
 └─────────────────────┘
+
 ```
 
 ---
